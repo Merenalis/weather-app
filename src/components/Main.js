@@ -2,10 +2,11 @@ import React from 'react'
 import '../styles/index.css';
 import '../styles/switch.css';
 import {useDispatch, useSelector, shallowEqual} from "react-redux";
-import {getResult} from "../functions/getResult";
+import {getCurrentResult} from "../store/actions/getCurrentResult";
 import Interface from "./Interface";
-import {actionUnits} from "../store/actions/action";
+import {actionFavorites, actionUnits} from "../store/actions/action";
 import {Button, Input} from "@material-ui/core";
+import Forecast from "./Forecast";
 
 function Main() {
     const dispatch = useDispatch()
@@ -18,23 +19,36 @@ function Main() {
 
     function getCity() {
         const city = document.getElementById('input').value
-        dispatch(getResult(city, units))
+        dispatch(getCurrentResult(city, units))
     }
 
     function setCity(city) {
-        document.getElementById('input').value = city
-
-        dispatch(getResult(city, units))
+        document.getElementById('input').value = data.repos.weather.name
+        dispatch(getCurrentResult(city, units))
 
     }
 
+    function addFav() {
+        const city = document.getElementById('input').value
+        dispatch(actionFavorites(city))
+
+    }
+
+    const set = Array.from(new Set(data.repos.favorites))
+    const favoritesS = set.map((city, index) => {
+        return (
+            <Button key={index} onClick={() => setCity(city)}>{city}</Button>
+        );
+    });
     return (
         <div>
             <h1>Weatherizer</h1>
             <div>
+                <Button onClick={addFav}>Add</Button>
                 <Input type="text" id='input'/>
                 <Button onClick={getCity}>Check</Button>
             </div>
+
             <div className="switch-main">
                 <div className="switch-main__switch-text">
                     <span> Celsius </span>
@@ -48,14 +62,20 @@ function Main() {
                 </div>
             </div>
             <div className="favorites">
-                <Button className='fav-btn' onClick={() => setCity('Kyiv')}>Kyiv</Button>
-                <Button className='fav-btn' onClick={() => setCity('Zaporizhzhya')}>Zaporizhzhya</Button>
-                <Button className='fav-btn' onClick={() => setCity('New York')}>New York</Button>
-                <Button className='fav-btn' onClick={() => setCity('Lviv')}>Lviv</Button>
+                {favoritesS}
             </div>
+
             {
-                data.repos.info.length === 0 ? 'Enter the name of city and press on the button Check' :
-                    <Interface info={data.repos.info}/>
+                data.repos.error === true ? 'City not found. Please enter the correct city name' : data.repos.weather.length === 0
+                    ? 'Enter the name of the city and click the button Check' : <Interface info={data.repos.weather}/>
+
+
+            }
+            {
+                data.repos.error === true ? '' : data.repos.forecast.length === 0
+                    ? '' : <Forecast info={data.repos.forecast}/>
+
+
             }
         </div>
     );
