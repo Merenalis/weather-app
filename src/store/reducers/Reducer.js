@@ -1,11 +1,12 @@
-import {SET_UNITS, SET_RESULT, ADD_FAVORITES, ERROR} from '../actionTypes/actionType';
+import {SET_UNITS, SET_RESULT, ADD_FAVORITES, ERROR, GET_CITY} from '../actionTypes/actionType';
 
 const initialState = {
     forecast: [],
     weather: [],
     units: true,
     favorites: [],
-    error : false
+    error : false,
+    city: '',
 };
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -36,6 +37,12 @@ export default function reducer(state = initialState, action) {
             return {
                 ...state,
                 error: true
+            }
+        }
+        case GET_CITY: {
+            return {
+                ...state,
+                city: action.payload.city
             }
         }
 

@@ -4,7 +4,7 @@ import '../styles/switch.css';
 import {useDispatch, useSelector, shallowEqual} from "react-redux";
 import {getCurrentResult} from "../store/actions/getCurrentResult";
 import Interface from "./Interface";
-import {actionFavorites, actionUnits} from "../store/actions/action";
+import {actionFavorites, actionGetCity, actionUnits} from "../store/actions/action";
 import {Button, Input} from "@material-ui/core";
 import Forecast from "./Forecast";
 
@@ -18,20 +18,23 @@ function Main() {
     }
 
     function getCity() {
-        const city = document.getElementById('input').value
+        const city = data.repos.city
         dispatch(getCurrentResult(city, units))
+    }
+
+    function handleChange(event) {
+        const city = event.target.value
+        dispatch(actionGetCity(city))
     }
 
     function setCity(city) {
-        document.getElementById('input').value = data.repos.weather.name
+        dispatch(actionGetCity(city))
         dispatch(getCurrentResult(city, units))
-
     }
 
     function addFav() {
-        const city = document.getElementById('input').value
+        const city = data.repos.city
         dispatch(actionFavorites(city))
-
     }
 
     const set = Array.from(new Set(data.repos.favorites))
@@ -43,12 +46,13 @@ function Main() {
     return (
         <div>
             <h1>Weatherizer</h1>
-            <div>
+            <form>
                 <Button onClick={addFav}>Add</Button>
-                <Input type="text" id='input'/>
+                <label>
+                    <Input type="text" id='input' value={data.repos.city} onChange={handleChange}/>
+                </label>
                 <Button onClick={getCity}>Check</Button>
-            </div>
-
+            </form>
             <div className="switch-main">
                 <div className="switch-main__switch-text">
                     <span> Celsius </span>
