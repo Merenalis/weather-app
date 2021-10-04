@@ -1,14 +1,15 @@
 .forecast-wrap{
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
 }
 .forecast{
-    margin: auto;
-    height: 300px;
+    height: 350px;
     box-shadow: rgba(60, 64, 67, 0.3) 0 1px 2px 0, rgba(60, 64, 67, 0.15) 0 2px 6px 2px;
     text-align: left;
     position: relative;
     min-height: 100%;
     line-height: 40px;
-    padding: 25px 45px 25px 25px;
+    padding: 25px 55px 25px 25px;
+    margin: auto auto 15px;
 }

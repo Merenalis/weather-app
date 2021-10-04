@@ -5,6 +5,7 @@ import {shallowEqual, useSelector} from "react-redux";
 function Forecast(props) {
     const data = useSelector(state => state, shallowEqual)
     const units = data.repos.units ? 0 : 32
+    const unitsSymbol = data.repos.units ? 'C' : 'F'
     let countArr = Array(5).fill(null)
 
     const listItems = countArr.map((count, index) =>
@@ -13,13 +14,13 @@ function Forecast(props) {
                 {props.info.list[index].dt_txt}
             </div>
             <div className="temp">
-                Temperature: {(props.info.list[index].main.temp + units).toFixed(2)} &deg;C <br/>
-                Feels like: {(props.info.list[index].main.feels_like + units).toFixed(2)} &deg;C <br/>
+                Temperature: {(props.info.list[index].main.temp + units).toFixed(2)} &deg; {unitsSymbol} <br/>
+                Feels like: {(props.info.list[index].main.feels_like + units).toFixed(2)} &deg;{unitsSymbol} <br/>
 
             </div>
             <div className="max-min">
-                Max: {(props.info.list[index].main.temp_max + units).toFixed(2)} &deg;C, <br/>
-                Min: {(props.info.list[index].main.temp_min + units).toFixed(2)} &deg;C <br/>
+                Max: {(props.info.list[index].main.temp_max + units).toFixed(2)} &deg;{unitsSymbol}, <br/>
+                Min: {(props.info.list[index].main.temp_min + units).toFixed(2)} &deg;{unitsSymbol} <br/>
             </div>
             <div className="desc">
                 {props.info.list[index].weather !== undefined ? props.info.list[index].weather[0].description : ''}

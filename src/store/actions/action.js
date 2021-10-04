@@ -1,4 +1,4 @@
-import {ADD_FAVORITES, ERROR, GET_CITY, SET_RESULT, SET_UNITS} from '../actionTypes/actionType';
+import {ADD_FAVORITES, DEL_FAV, ERROR, GET_CITY, SET_RESULT, SET_UNITS} from '../actionTypes/actionType';
 
 export function actionInfo(forecast,weather) {
     return {
@@ -31,6 +31,14 @@ export function actionError() {
 export function actionGetCity(city) {
     return {
         type: GET_CITY,
+        payload:{
+            city:city
+        }
+    }
+}
+export function actionDelFav(city) {
+    return {
+        type: DEL_FAV,
         payload:{
             city:city
         }

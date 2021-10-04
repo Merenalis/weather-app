@@ -1,4 +1,4 @@
-import {SET_UNITS, SET_RESULT, ADD_FAVORITES, ERROR, GET_CITY} from '../actionTypes/actionType';
+import {SET_UNITS, SET_RESULT, ADD_FAVORITES, ERROR, GET_CITY, DEL_FAV} from '../actionTypes/actionType';
 
 const initialState = {
     forecast: [],
@@ -27,10 +27,10 @@ export default function reducer(state = initialState, action) {
             }
         }
         case ADD_FAVORITES: {
-            state.favorites.push(action.payload.city)
+                    const arr = Array.from(action.payload.city)
             return {
                 ...state,
-                favorites: state.favorites
+                favorites: arr
             }
         }
         case ERROR: {
@@ -43,6 +43,15 @@ export default function reducer(state = initialState, action) {
             return {
                 ...state,
                 city: action.payload.city
+            }
+        }
+        case DEL_FAV: {
+            const index = state.favorites.indexOf(action.payload.city)
+            state.favorites.splice(index,1)
+            return {
+                ...state,
+                favorites: state.favorites,
+
             }
         }
 
