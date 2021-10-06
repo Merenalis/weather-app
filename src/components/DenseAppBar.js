@@ -1,20 +1,17 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import {createTheme} from '@mui/system';
 
 const drawerWidth = 240;
 
@@ -43,15 +40,35 @@ function ResponsiveDrawer(props) {
 
     const container = window !== undefined ? () => window().document.body : undefined;
 
+    const themeAppBar = createTheme({
+        width: {sm: `100%`},
+        ml: {sm: `${drawerWidth}px`},
+        zIndex: (theme) => theme.zIndex.drawer + 1,
+    });
+    const themeBox = createTheme({
+        width: {sm: drawerWidth},
+        flexShrink: {sm: 0}
+    });
+    const themeDrawerTemp = createTheme({
+        display: {xs: 'block', sm: 'none'},
+        paper: {boxSizing: 'border-box', width: drawerWidth}
+    });
+    const themeDrawerPerm = createTheme({
+        display: {xs: 'none', sm: 'block'},
+        paper: {boxSizing: 'border-box', width: drawerWidth}
+
+    });
     return (
         <div>
             <CssBaseline/>
             <AppBar
-                position="fixed"
+                position='fixed'
                 sx={{
-                    width: {sm: `calc(100% - ${drawerWidth}px)`},
-                    ml: {sm: `${drawerWidth}px`},
+                    width: themeAppBar.width,
+                    ml: themeAppBar.ml,
+                    zIndex: themeAppBar.zIndex
                 }}
+
             >
                 <Toolbar>
                     <IconButton
@@ -69,8 +86,7 @@ function ResponsiveDrawer(props) {
             </AppBar>
             <Box
                 component="nav"
-                sx={{width: {sm: drawerWidth}, flexShrink: {sm: 0}}}
-                aria-label="mailbox folders"
+                sx={{width: themeBox.width, flexShrink: {sm: themeBox.flexShrink}}}
             >
                 {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                 <Drawer
@@ -82,8 +98,8 @@ function ResponsiveDrawer(props) {
                         keepMounted: true, // Better open performance on mobile.
                     }}
                     sx={{
-                        display: {xs: 'block', sm: 'none'},
-                        '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
+                        display: themeDrawerTemp.display,
+                        '& .MuiDrawer-paper': themeDrawerTemp.paper,
                     }}
                 >
                     {drawer}
@@ -91,8 +107,8 @@ function ResponsiveDrawer(props) {
                 <Drawer
                     variant="permanent"
                     sx={{
-                        display: {xs: 'none', sm: 'block'},
-                        '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
+                        display: themeDrawerPerm.display,
+                        '& .MuiDrawer-paper': themeDrawerPerm.paper,
                     }}
                     open
                 >
@@ -103,13 +119,5 @@ function ResponsiveDrawer(props) {
         </div>
     );
 }
-
-ResponsiveDrawer.propTypes = {
-    /**
-     * Injected by the documentation to work in an iframe.
-     * You won't need it on your project.
-     */
-    window: PropTypes.func,
-};
 
 export default ResponsiveDrawer;

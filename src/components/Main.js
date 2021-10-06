@@ -3,21 +3,22 @@ import '../styles/switch.css';
 import {useDispatch, useSelector, shallowEqual} from "react-redux";
 import {getCurrentResult} from "../store/actions/getCurrentResult";
 import Interface from "./Interface";
-import { actionFavorites, actionGetCity, actionUnits} from "../store/actions/action";
+import {actionFavorites, actionGetCity, actionUnits} from "../store/actions/action";
 import {Button, Input} from "@material-ui/core";
 import Forecast from "./Forecast";
 import {getValid} from "../store/actions/getValid";
 import {getAllStorage} from "../functions/getAllStorage";
 import DenseAppBar from "./DenseAppBar";
 import '../styles/index.css';
-import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
+import {useRouteMatch} from "react-router-dom";
 
 
 function Main() {
     const dispatch = useDispatch()
     const data = useSelector(state => state, shallowEqual)
     const units = data.repos.units
+    let match = useRouteMatch()
 
     function switchUnits() {
         dispatch(actionUnits())
@@ -49,23 +50,36 @@ function Main() {
         dispatch(actionFavorites(getAllStorage()))
     }
 
-    useEffect(()=>{dispatch(actionFavorites(getAllStorage()))},[])
+    if (match.url !== '/') {
+        let url = match.url;
+        const city = url.replace(new RegExp('(^/)', 'g'), '')
+        useEffect(() => {
+            setCity(city)
+        }, [])
+    }
+
+    useEffect(() => {
+        dispatch(actionFavorites(getAllStorage()))
+    }, [])
     const favoritesS = data.repos.favorites.map((value, index) => {
         return (
-            <div key={index} style={{display:'flex',justifyContent:'space-between'}}>
-                <Button style={{justifyContent:'left'}} onClick={() => setCity(value)}>{value}</Button>
+            <div key={index} style={{display: 'flex', justifyContent: 'space-between'}}>
+                <Button style={{justifyContent: 'left'}} onClick={() => setCity(value)}>{value}</Button>
                 <Button onClick={() => delFav(value)}>X</Button>
             </div>
         );
     });
 
+    function handleSubmit(event) {
+        event.preventDefault()
+    }
+
 
     return (
-        <Box sx={{ display: 'flex' }} >
-        <DenseAppBar fav={favoritesS}/>
-            <Box component="main" sx={{ flexGrow: 1, pt: 10 }}>
-                <h1> </h1>
-                <form>
+        <div className='mainBox'>
+            <DenseAppBar fav={favoritesS}/>
+            <div className="main">
+                <form onSubmit={handleSubmit}>
                     <Button onClick={addFav}>Add</Button>
                     <label>
                         <Input type="text" id='input' value={data.repos.city} onChange={handleChange}/>
@@ -87,21 +101,16 @@ function Main() {
                 <div>
                     {
                         data.repos.error === true ? 'City not found. Please enter the correct city name' : data.repos.weather.length === 0
-                            ? 'Enter the name of the city and click the button Check' : <Interface info={data.repos.weather}/>
-
-
+                            ? 'Enter the name of the city and click the button Check' :
+                            <Interface info={data.repos.weather}/>
                     }
                     {
                         data.repos.error === true ? '' : data.repos.forecast.length === 0
                             ? '' : <Forecast info={data.repos.forecast}/>
-
-
                     }
                 </div>
-            </Box>
-
-
-        </Box>
+            </div>
+        </div>
     );
 }
 

@@ -1,8 +1,6 @@
-@import "./font.css";
 
 body {
-    font-size: 25px;
-    font-family: 'Open Sans Condensed', sans-serif;
+
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
@@ -18,4 +16,14 @@ body {
 
 .favorites {
     margin-bottom: 20px;
+}
+
+.mainBox {
+    display: flex;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 22px;
+}
+.main{
+    flex-grow: 1;
+    padding-top: 80px;
 }
