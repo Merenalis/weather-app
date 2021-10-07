@@ -10,7 +10,6 @@ import {getValid} from "../store/actions/getValid";
 import {getAllStorage} from "../functions/getAllStorage";
 import DenseAppBar from "./DenseAppBar";
 import '../styles/index.css';
-import Box from "@mui/material/Box";
 import {useRouteMatch} from "react-router-dom";
 
 
@@ -50,15 +49,12 @@ function Main() {
         dispatch(actionFavorites(getAllStorage()))
     }
 
-    if (match.url !== '/') {
-        let url = match.url;
-        const city = url.replace(new RegExp('(^/)', 'g'), '')
-        useEffect(() => {
-            setCity(city)
-        }, [])
-    }
-
     useEffect(() => {
+        if (match.url !== '/') {
+            let url = match.url;
+            const city = url.replace(new RegExp('(^/)', 'g'), '')
+            setCity(city)
+        }
         dispatch(actionFavorites(getAllStorage()))
     }, [])
     const favoritesS = data.repos.favorites.map((value, index) => {
@@ -71,6 +67,7 @@ function Main() {
     });
 
     function handleSubmit(event) {
+        getCity()
         event.preventDefault()
     }
 

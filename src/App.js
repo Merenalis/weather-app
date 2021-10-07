@@ -11,15 +11,8 @@ function App() {
     <Router>
         <div>
             <Switch>
-                <Route path="/zaporizhia">
-                    <Main/>
-                </Route>
-                <Route path="/kyiv">
-                    <Main/>
-                </Route>
-                <Route path="/">
-                    <Main/>
-                </Route>
+                <Route path="/:city" component={Main}/>
+                <Route path="/" component={Main}/>
             </Switch>
         </div>
     </Router>

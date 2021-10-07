@@ -8,7 +8,6 @@ import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import {createTheme} from '@mui/system';
@@ -78,7 +77,6 @@ function ResponsiveDrawer(props) {
                         onClick={handleDrawerToggle}
                         sx={{mr: 2, display: {sm: 'none'}}}
                     >
-                        <MenuIcon/>
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
                         Weather App </Typography>
