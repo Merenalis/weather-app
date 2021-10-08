@@ -27,3 +27,11 @@ body {
     flex-grow: 1;
     padding-top: 80px;
 }
+.favorites-list{
+    display: flex;
+    justify-content: space-between;
+}
+.favorites-btn{
+    justify-content: left;
+
+}

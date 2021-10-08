@@ -1,53 +1,73 @@
-import React, {useEffect} from 'react'
+import React, {useCallback, useEffect} from 'react'
 import '../styles/switch.css';
-import {useDispatch, useSelector, shallowEqual} from "react-redux";
-import {getCurrentResult} from "../store/actions/getCurrentResult";
-import Interface from "./Interface";
-import {actionFavorites, actionGetCity, actionUnits} from "../store/actions/action";
-import {Button, Input} from "@material-ui/core";
-import Forecast from "./Forecast";
-import {getValid} from "../store/actions/getValid";
-import {getAllStorage} from "../functions/getAllStorage";
-import DenseAppBar from "./DenseAppBar";
+import {useDispatch, useSelector, shallowEqual} from 'react-redux';
+import {getCurrentResult} from '../store/actions/getCurrentResult';
+import Interface from './Interface';
+import {actionFavorites, actionGetCity, actionUnits} from '../store/actions/action';
+import {Button, Input} from '@material-ui/core';
+import Forecast from './Forecast';
+import {getValid} from '../store/actions/getValid';
+import {getAllStorage} from '../functions/getAllStorage';
+import DenseAppBar from './DenseAppBar';
 import '../styles/index.css';
-import {useRouteMatch} from "react-router-dom";
+import {useRouteMatch} from 'react-router-dom';
 
 
 function Main() {
     const dispatch = useDispatch()
-    const data = useSelector(state => state, shallowEqual)
-    const units = data.repos.units
+    const {
+        units,
+        city,
+        error,
+        favorites = [],
+        forecast = [],
+        weather = []
+    } = useSelector(state => state.repos, shallowEqual)
+
     let match = useRouteMatch()
 
-    function switchUnits() {
-        dispatch(actionUnits())
-    }
-
-    function getCity() {
-        const city = data.repos.city
-        dispatch(getCurrentResult(city, units))
-    }
-
-    function handleChange(event) {
-        const city = event.target.value
-        dispatch(actionGetCity(city))
-    }
-
-    function setCity(city) {
-        dispatch(actionGetCity(city))
-        dispatch(getCurrentResult(city, units))
-    }
-
-    function addFav() {
-        const city = data.repos.city
-        dispatch(getValid(city))
-    }
-
-
-    function delFav(city) {
-        localStorage.removeItem(city)
-        dispatch(actionFavorites(getAllStorage()))
-    }
+    const getCity = useCallback(
+        () => {
+            dispatch(getCurrentResult(city, units))
+        },
+        [city, units],
+    );
+    const switchUnits = useCallback(
+        () => {
+            dispatch(actionUnits())
+        },
+        [],
+    );
+    const handleChange = useCallback(
+        (event) => {
+            const city = event.target.value
+            dispatch(actionGetCity(city))
+        },
+        [city],
+    );
+    const setCity = useCallback(
+        (city) => {
+            dispatch(actionGetCity(city))
+            dispatch(getCurrentResult(city, units))
+        },
+        [city, units],
+    );
+    const addFav = useCallback(
+        () => {
+            dispatch(getValid(city, favorites))
+        },
+        [city],
+    );
+    const delFav = useCallback(
+        (index) => {
+            favorites.splice(index, 1)
+            localStorage.setItem('cities', favorites.toString())
+            if (favorites.length === 0)
+                localStorage.removeItem('cities')
+            dispatch(actionFavorites(getAllStorage()))
+        },
+        [city],
+    );
 
     useEffect(() => {
         if (match.url !== '/') {
@@ -57,53 +77,53 @@ function Main() {
         }
         dispatch(actionFavorites(getAllStorage()))
     }, [])
-    const favoritesS = data.repos.favorites.map((value, index) => {
+
+    const favoritesS = favorites.map((value, index) => {
         return (
-            <div key={index} style={{display: 'flex', justifyContent: 'space-between'}}>
-                <Button style={{justifyContent: 'left'}} onClick={() => setCity(value)}>{value}</Button>
-                <Button onClick={() => delFav(value)}>X</Button>
+            <div key={index} className='favorites-list'>
+                <Button className='favorites-btn' onClick={() => setCity(value)}>{value}</Button>
+                <Button onClick={() => delFav(index)}>X</Button>
             </div>
         );
     });
 
-    function handleSubmit(event) {
+    const handleSubmit = useCallback((event) => {
         getCity()
         event.preventDefault()
-    }
-
+    }, [])
 
     return (
         <div className='mainBox'>
             <DenseAppBar fav={favoritesS}/>
-            <div className="main">
+            <div className='main'>
                 <form onSubmit={handleSubmit}>
                     <Button onClick={addFav}>Add</Button>
                     <label>
-                        <Input type="text" id='input' value={data.repos.city} onChange={handleChange}/>
+                        <Input type='text' value={city} onChange={handleChange}/>
                     </label>
                     <Button onClick={getCity}>Check</Button>
                 </form>
-                <div className="switch-main">
-                    <div className="switch-main__switch-text">
+                <div className='switch-main'>
+                    <div className='switch-main__switch-text'>
                         <span> Celsius </span>
                     </div>
-                    <label className="switch-main__switch">
-                        <input type="checkbox" onChange={switchUnits}/>
-                        <span className="switch-main__slider round"/>
+                    <label className='switch-main__switch'>
+                        <input type='checkbox' onChange={switchUnits}/>
+                        <span className='switch-main__slider round'/>
                     </label>
-                    <div className="switch-main__switch-text">
+                    <div className='switch-main__switch-text'>
                         <span> Fahrenheit </span>
                     </div>
                 </div>
                 <div>
                     {
-                        data.repos.error === true ? 'City not found. Please enter the correct city name' : data.repos.weather.length === 0
+                        error === true ? 'City not found. Please enter the correct city name' : weather.length === 0
                             ? 'Enter the name of the city and click the button Check' :
-                            <Interface info={data.repos.weather}/>
+                            <Interface info={weather}/>
                     }
                     {
-                        data.repos.error === true ? '' : data.repos.forecast.length === 0
-                            ? '' : <Forecast info={data.repos.forecast}/>
+                        error === true ? '' : forecast.length === 0
+                            ? '' : <Forecast info={forecast}/>
                     }
                 </div>
             </div>

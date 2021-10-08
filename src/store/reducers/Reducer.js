@@ -5,7 +5,7 @@ const initialState = {
     weather: [],
     units: true,
     favorites: [],
-    error : false,
+    error: false,
     city: '',
 };
 export default function reducer(state = initialState, action) {
@@ -16,7 +16,6 @@ export default function reducer(state = initialState, action) {
                 forecast: action.payload.forecast,
                 weather: action.payload.weather,
                 error: false
-
             }
 
         case SET_UNITS: {
@@ -27,10 +26,13 @@ export default function reducer(state = initialState, action) {
             }
         }
         case ADD_FAVORITES: {
-                    const arr = Array.from(action.payload.city)
+            let arrayOfStrings = []
+            if (action.payload.city.length !== 0)
+                arrayOfStrings = action.payload.city.toString().split(',');
+            const unique = Array.from(new Set(arrayOfStrings));
             return {
                 ...state,
-                favorites: arr
+                favorites: unique
             }
         }
         case ERROR: {
@@ -47,11 +49,10 @@ export default function reducer(state = initialState, action) {
         }
         case DEL_FAV: {
             const index = state.favorites.indexOf(action.payload.city)
-            state.favorites.splice(index,1)
+            state.favorites.splice(index, 1)
             return {
                 ...state,
                 favorites: state.favorites,
-
             }
         }
 

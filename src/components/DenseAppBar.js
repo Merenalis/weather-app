@@ -11,6 +11,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import {createTheme} from '@mui/system';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const drawerWidth = 240;
 
@@ -28,7 +29,7 @@ function ResponsiveDrawer(props) {
             <Divider/>
             <List>
                 {props.fav.map((text, index) => (
-                    <ListItem button key={text}>
+                    <ListItem button key={index}>
                         <ListItemText primary={text}/>
                     </ListItem>
                 ))}
@@ -77,6 +78,7 @@ function ResponsiveDrawer(props) {
                         onClick={handleDrawerToggle}
                         sx={{mr: 2, display: {sm: 'none'}}}
                     >
+                        <MenuIcon/>
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
                         Weather App </Typography>
@@ -86,7 +88,6 @@ function ResponsiveDrawer(props) {
                 component="nav"
                 sx={{width: themeBox.width, flexShrink: {sm: themeBox.flexShrink}}}
             >
-                {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                 <Drawer
                     container={container}
                     variant="temporary"
