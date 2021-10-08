@@ -10,11 +10,14 @@ import {getValid} from '../store/actions/getValid';
 import {getAllStorage} from '../functions/getAllStorage';
 import DenseAppBar from './DenseAppBar';
 import '../styles/index.css';
-import {useRouteMatch} from 'react-router-dom';
+import {useHistory, useRouteMatch} from 'react-router-dom';
 
 
 function Main() {
     const dispatch = useDispatch()
+    const history = useHistory();
+    const match = useRouteMatch()
+
     const {
         units,
         city,
@@ -24,14 +27,17 @@ function Main() {
         weather = []
     } = useSelector(state => state.repos, shallowEqual)
 
-    let match = useRouteMatch()
 
     const getCity = useCallback(
         () => {
             dispatch(getCurrentResult(city, units))
+            //alert(city)
+            history.push(`/${city}`)
+
         },
         [city, units],
     );
+
     const switchUnits = useCallback(
         () => {
             dispatch(actionUnits())
@@ -49,6 +55,8 @@ function Main() {
         (city) => {
             dispatch(actionGetCity(city))
             dispatch(getCurrentResult(city, units))
+            history.push(`/${city}`)
+
         },
         [city, units],
     );
@@ -87,10 +95,10 @@ function Main() {
         );
     });
 
-    const handleSubmit = useCallback((event) => {
+    function handleSubmit(event) {
         getCity()
         event.preventDefault()
-    }, [])
+    }
 
     return (
         <div className='mainBox'>
