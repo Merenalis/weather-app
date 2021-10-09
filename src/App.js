@@ -12,7 +12,7 @@ function App() {
     <Router>
         <div>
             <Switch>
-                <Route path="/:city" component={Main}/>
+                <Route path="/:cities" component={Main}/>
                 <Route path="/" component={Main}/>
             </Switch>
         </div>

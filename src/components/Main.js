@@ -10,34 +10,29 @@ import {getValid} from '../store/actions/getValid';
 import {getAllStorage} from '../functions/getAllStorage';
 import DenseAppBar from './DenseAppBar';
 import '../styles/index.css';
-import {useHistory, useRouteMatch} from 'react-router-dom';
-
+import {useHistory, useParams} from 'react-router-dom';
 
 function Main() {
     const dispatch = useDispatch()
     const history = useHistory();
-    const match = useRouteMatch()
-
+    const {cities} = useParams()
     const {
         units,
         city,
         error,
         favorites = [],
         forecast = [],
-        weather = []
+        weather = [],
     } = useSelector(state => state.repos, shallowEqual)
-
-
     const getCity = useCallback(
         () => {
             dispatch(getCurrentResult(city, units))
-            //alert(city)
-            history.push(`/${city.toLowerCase()}`)
-
         },
         [city, units],
     );
-
+    useEffect(() => {
+        history.push(`/${weather.name !== undefined ? weather.name.toLowerCase() : ''}`)
+    }, [weather])
     const switchUnits = useCallback(
         () => {
             dispatch(actionUnits())
@@ -55,7 +50,6 @@ function Main() {
         (city) => {
             dispatch(actionGetCity(city))
             dispatch(getCurrentResult(city, units))
-            history.push(`/${city.toLowerCase()}`)
 
         },
         [city, units],
@@ -78,11 +72,8 @@ function Main() {
     );
 
     useEffect(() => {
-        if (match.url !== '/') {
-            let url = match.url;
-            const city = url.replace(new RegExp('(^/)', 'g'), '')
-            setCity(city)
-        }
+        if (cities !== undefined)
+            setCity(cities)
         dispatch(actionFavorites(getAllStorage()))
     }, [])
 
@@ -123,7 +114,7 @@ function Main() {
                         <span> Fahrenheit </span>
                     </div>
                 </div>
-                <div>
+                <div className='main-forecast'>
                     {
                         error === true ? 'City not found. Please enter the correct city name' : weather.length === 0
                             ? 'Enter the name of the city and click the button Check' :
