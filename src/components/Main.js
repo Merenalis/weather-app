@@ -3,14 +3,15 @@ import '../styles/switch.css';
 import {useDispatch, useSelector, shallowEqual} from 'react-redux';
 import {getCurrentResult} from '../store/actions/getCurrentResult';
 import Interface from './Interface';
-import {actionFavorites, actionGetCity, actionUnits} from '../store/actions/action';
-import {Button, Input} from '@material-ui/core';
+import {actionFavorites, actionGetCity} from '../store/actions/action';
+import {Button} from '@material-ui/core';
 import Forecast from './Forecast';
-import {getValid} from '../store/actions/getValid';
 import {getAllStorage} from '../functions/getAllStorage';
 import DenseAppBar from './DenseAppBar';
 import '../styles/index.css';
 import {useHistory, useParams} from 'react-router-dom';
+import Form from './Form';
+import Switch from './Switch';
 
 function Main() {
     const dispatch = useDispatch()
@@ -24,42 +25,15 @@ function Main() {
         forecast = [],
         weather = [],
     } = useSelector(state => state.repos, shallowEqual)
-    const getCity = useCallback(
-        () => {
-            dispatch(getCurrentResult(city, units))
-        },
-        [city, units],
-    );
-    useEffect(() => {
-        history.push(`/${weather.name !== undefined ? weather.name.toLowerCase() : ''}`)
-    }, [weather])
-    const switchUnits = useCallback(
-        () => {
-            dispatch(actionUnits())
-        },
-        [],
-    );
-    const handleChange = useCallback(
-        (event) => {
-            const city = event.target.value
-            dispatch(actionGetCity(city))
-        },
-        [city],
-    );
+
     const setCity = useCallback(
         (city) => {
             dispatch(actionGetCity(city))
             dispatch(getCurrentResult(city, units))
-
         },
         [city, units],
     );
-    const addFav = useCallback(
-        () => {
-            dispatch(getValid(city, favorites))
-        },
-        [city],
-    );
+
     const delFav = useCallback(
         (index) => {
             favorites.splice(index, 1)
@@ -77,6 +51,10 @@ function Main() {
         dispatch(actionFavorites(getAllStorage()))
     }, [])
 
+    useEffect(() => {
+        history.push(`/${weather.name !== undefined ? weather.name.toLowerCase() : ''}`)
+    }, [weather])
+
     const favoritesS = favorites.map((value, index) => {
         return (
             <div key={index} className='favorites-list'>
@@ -86,34 +64,12 @@ function Main() {
         );
     });
 
-    function handleSubmit(event) {
-        getCity()
-        event.preventDefault()
-    }
-
     return (
         <div className='mainBox'>
             <DenseAppBar fav={favoritesS}/>
             <div className='main'>
-                <form onSubmit={handleSubmit}>
-                    <Button onClick={addFav}>Add</Button>
-                    <label>
-                        <Input type='text' value={city} onChange={handleChange}/>
-                    </label>
-                    <Button onClick={getCity}>Check</Button>
-                </form>
-                <div className='switch-main'>
-                    <div className='switch-main__switch-text'>
-                        <span> Celsius </span>
-                    </div>
-                    <label className='switch-main__switch'>
-                        <input type='checkbox' onChange={switchUnits}/>
-                        <span className='switch-main__slider round'/>
-                    </label>
-                    <div className='switch-main__switch-text'>
-                        <span> Fahrenheit </span>
-                    </div>
-                </div>
+                <Form/>
+                <Switch/>
                 <div className='main-forecast'>
                     {
                         error === true ? 'City not found. Please enter the correct city name' : weather.length === 0
