@@ -32,7 +32,7 @@ function Main() {
         () => {
             dispatch(getCurrentResult(city, units))
             //alert(city)
-            history.push(`/${city}`)
+            history.push(`/${city.toLowerCase()}`)
 
         },
         [city, units],
@@ -55,7 +55,7 @@ function Main() {
         (city) => {
             dispatch(actionGetCity(city))
             dispatch(getCurrentResult(city, units))
-            history.push(`/${city}`)
+            history.push(`/${city.toLowerCase()}`)
 
         },
         [city, units],
