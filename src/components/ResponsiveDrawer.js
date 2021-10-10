@@ -10,16 +10,43 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import {createTheme} from '@mui/system';
 import MenuIcon from '@mui/icons-material/Menu';
+import {createTheme, ThemeProvider} from '@mui/material/styles';
 
 const drawerWidth = 240;
 
-const themeAppBar = createTheme({
-    width: {sm: `100%`},
-    ml: {sm: `${drawerWidth}px`},
-    zIndex: (theme) => theme.zIndex.drawer + 1,
+
+let themes = createTheme({
+    components: {
+        MuiAppBar: {
+            defaultProps: {
+                sx: {
+                    width: '100%',
+                    ml: {sm: `${drawerWidth}px`},
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                }
+            }
+        },
+        MuiIconButton: {
+            defaultProps: {
+                sx: {
+                    mr: 2,
+                    display: {sm: 'none'}
+                }
+            },
+        },
+        MuiDrawer: {
+             defaultProps: {
+                 sx: {
+                     display: {xs: 'block', sm: 'none'},
+                     '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth}
+                 }
+             },
+        },
+
+    },
 });
+
 
 function ResponsiveDrawer(props) {
     const {window} = props
@@ -46,31 +73,25 @@ function ResponsiveDrawer(props) {
     const container = window !== undefined ? () => window().document.body : undefined;
 
     return (
-        <div>
+        <ThemeProvider theme={themes}>
             <CssBaseline/>
-                <AppBar
-                    position='fixed'
-                    sx={{
-                        width: themeAppBar.width,
-                        ml: themeAppBar.ml,
-                        zIndex: themeAppBar.zIndex
-                    }}
+            <AppBar
+                position='fixed'
+            >
+                <Toolbar>
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        edge="start"
+                        onClick={handleDrawerToggle}
+                    >
+                        <MenuIcon/>
+                    </IconButton>
+                    <Typography variant="h6" noWrap component="div">
+                        Weather App </Typography>
+                </Toolbar>
+            </AppBar>
 
-                >
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            edge="start"
-                            onClick={handleDrawerToggle}
-                            sx={{mr: 2, display: {sm: 'none'}}}
-                        >
-                            <MenuIcon/>
-                        </IconButton>
-                        <Typography variant="h6" noWrap component="div">
-                            Weather App </Typography>
-                    </Toolbar>
-                </AppBar>
             <Box
                 component="nav"
                 sx={{
@@ -86,10 +107,6 @@ function ResponsiveDrawer(props) {
                     ModalProps={{
                         keepMounted: true,
                     }}
-                    sx={{
-                        display: {xs: 'block', sm: 'none'},
-                        '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth}
-                    }}
                 >
                     {drawer}
                 </Drawer>
@@ -98,7 +115,6 @@ function ResponsiveDrawer(props) {
                     open
                     sx={{
                         display: {xs: 'none', sm: 'block'},
-                        '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth}
                     }}
                 >
                     {drawer}
@@ -106,7 +122,8 @@ function ResponsiveDrawer(props) {
             </Box>
 
 
-        </div>
+        </ThemeProvider>
+
     );
 }
 
