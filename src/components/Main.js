@@ -7,7 +7,7 @@ import {actionFavorites, actionGetCity} from '../store/actions/action';
 import {Button} from '@material-ui/core';
 import Forecast from './Forecast';
 import {getAllStorage} from '../functions/getAllStorage';
-import DenseAppBar from './DenseAppBar';
+import DenseAppBar from './ResponsiveDrawer';
 import '../styles/index.css';
 import {useHistory, useParams} from 'react-router-dom';
 import Form from './Form';
