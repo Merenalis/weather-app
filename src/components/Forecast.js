@@ -4,22 +4,23 @@ import {shallowEqual, useSelector} from 'react-redux';
 
 function Forecast() {
     const {units, forecast = []} = useSelector(state => state.repos, shallowEqual)
-    const unitsNumber = units ? 0 : 32
     const unitsSymbol = units ? 'C' : 'F'
     const countArr = Array(5).fill(null)
-
+    function convertToF(temperature){
+        return temperature*(9/5)+32;
+    }
     const listItems = countArr.map((count, index) =>
         <div key={index} className='forecast'>
             <div className='date'>
                 {forecast.list[index].dt_txt}
             </div>
             <div className='temp'>
-                Temperature: {(forecast.list[index].main.temp + unitsNumber).toFixed(2)} &deg; {unitsSymbol} <br/>
-                Feels like: {(forecast.list[index].main.feels_like + unitsNumber).toFixed(2)} &deg;{unitsSymbol} <br/>
-            </div>
+                Temperature: {(units ? forecast.list[index].main.temp : convertToF(forecast.list[index].main.temp)).toFixed(2)} &deg; {unitsSymbol} <br/>
+                Feels like: {(units ? forecast.list[index].main.feels_like : convertToF(forecast.list[index].main.feels_like)).toFixed(2)} &deg; {unitsSymbol} <br/>
+             </div>
             <div className='max-min'>
-                Max: {(forecast.list[index].main.temp_max + unitsNumber).toFixed(2)} &deg;{unitsSymbol}, <br/>
-                Min: {(forecast.list[index].main.temp_min + unitsNumber).toFixed(2)} &deg;{unitsSymbol} <br/>
+                Max: {(units ? forecast.list[index].main.temp_max : convertToF(forecast.list[index].main.temp_max)).toFixed(2)} &deg;{unitsSymbol}, <br/>
+                Min: {(units ? forecast.list[index].main.temp_min : convertToF(forecast.list[index].main.temp_min)).toFixed(2)} &deg;{unitsSymbol}, <br/>
             </div>
             <div className='desc'>
                 {forecast.list[index].weather !== undefined ? forecast.list[index].weather[0].description : ''}

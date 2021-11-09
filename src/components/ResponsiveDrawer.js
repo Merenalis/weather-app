@@ -16,7 +16,7 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 const drawerWidth = 240;
 
 
-let themes = createTheme({
+const themes = createTheme({
     components: {
         MuiAppBar: {
             defaultProps: {
@@ -120,10 +120,7 @@ function ResponsiveDrawer(props) {
                     {drawer}
                 </Drawer>
             </Box>
-
-
         </ThemeProvider>
-
     );
 }
 
